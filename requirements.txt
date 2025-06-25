@@ -1,1 +1,4 @@
 Flask
+vercel
+redis
+requests
